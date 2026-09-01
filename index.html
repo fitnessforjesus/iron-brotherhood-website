@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iron Brotherhood — Weekly Men's Workout & Devotion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --iron: #111111;
+      --forge: #7a1508;
+      --ember: #C0392B;
+      --ash: #1e1e1e;
+      --smoke: #2a2a2a;
+      --light: #f5f0e8;
+      --muted: rgba(245,240,232,0.6);
+      --faint: rgba(245,240,232,0.22);
+      --gold: #B8960C;
+      --red-line: rgba(192,57,43,0.3);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      background: var(--iron);
+      color: var(--light);
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; cursor: pointer; }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; }
+
+    /* PAGE MANAGEMENT */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(17,17,17,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.15em;
+      color: var(--light);
+    }
+    .nav-logo span { color: var(--ember); }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a, .nav-links button {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links button:hover { color: var(--light); }
+    .nav-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--muted);
+      transition: all 0.2s;
+    }
+    .nav-mobile {
+      display: none;
+      position: fixed;
+      top: 60px; left: 0; right: 0;
+      background: rgba(17,17,17,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 1.5rem 2rem;
+      z-index: 99;
+      list-style: none;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a, .nav-mobile button {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-mobile a:hover, .nav-mobile button:hover { color: var(--light); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    /* HOME PAGE - HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 2rem 100px;
+      position: relative;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(139,26,10,0.35) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(139,26,10,0.1) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.018) 60px, rgba(255,255,255,0.018) 61px),
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.018) 60px, rgba(255,255,255,0.018) 61px);
+    }
+    .hero-content { position: relative; z-index: 2; }
+    .emblem { width: 72px; height: 72px; margin: 0 auto 2.5rem; }
+    .emblem svg, .emblem-sm svg, .emblem-md svg { width: 100%; height: 100%; }
+    .emblem-sm { width: 52px; height: 52px; margin: 0 auto 2rem; }
+    .emblem-md { width: 56px; height: 56px; margin: 0 auto 2rem; }
+    .hero-eyebrow {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.45em;
+      font-size: 12px;
+      color: var(--ember);
+      margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(80px, 16vw, 148px);
+      line-height: 0.88;
+      letter-spacing: 0.02em;
+    }
+    .hero-title .outline {
+      -webkit-text-stroke: 1.5px rgba(245,240,232,0.35);
+      color: transparent;
+      display: block;
+      font-size: clamp(54px, 10vw, 96px);
+    }
+    .hero-rule {
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ember), transparent);
+      margin: 2.5rem auto;
+    }
+    .hero-text {
+      font-size: 21px;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 700px;
+      margin-bottom: 3rem;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cta-btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      padding: 0.9rem 2.5rem;
+      border: 1px solid rgba(192,57,43,0.6);
+      color: var(--light);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .cta-btn.primary {
+      background: var(--ember);
+      border-color: var(--ember);
+    }
+    .cta-btn.primary:hover {
+      background: #a03125;
+      border-color: #a03125;
+    }
+    .cta-btn.secondary:hover {
+      background: rgba(192,57,43,0.15);
+      border-color: var(--ember);
+    }
+
+    /* JOIN SECTION */
+    .join-section {
+      padding: 80px 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-eyebrow {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.4em;
+      color: var(--ember);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 10vw, 80px);
+      line-height: 0.95;
+      letter-spacing: 0.03em;
+      margin-bottom: 2rem;
+    }
+    .section-rule {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ember), transparent);
+      margin: 1.5rem auto 2rem;
+    }
+    .section-text {
+      font-size: 19px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .steps-container {
+      display: grid;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .step {
+      background: var(--ash);
+      border: 1px solid rgba(192,57,43,0.25);
+      padding: 2rem;
+      text-align: left;
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      color: var(--ember);
+      margin-bottom: 0.5rem;
+    }
+    .step-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      margin-bottom: 0.75rem;
+    }
+    .step-text {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* CALENDAR SECTION */
+    .calendar-section {
+      padding: 80px 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .calendar-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--ash);
+      border: 1px solid rgba(192,57,43,0.25);
+    }
+    .calendar-table th {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      background: rgba(192,57,43,0.15);
+      border-bottom: 1px solid rgba(192,57,43,0.25);
+      padding: 1.5rem;
+      text-align: left;
+    }
+    .calendar-table td {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(192,57,43,0.15);
+    }
+    .calendar-table tr:last-child td {
+      border-bottom: none;
+    }
+    .calendar-table tr:hover {
+      background: rgba(192,57,43,0.08);
+    }
+
+    /* CONTACT SECTION */
+    .contact-section {
+      padding: 80px 2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .contact-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .form-group {
+      margin-bottom: 2rem;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--ash);
+      border: 1px solid rgba(192,57,43,0.25);
+      color: var(--light);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--ember);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 150px;
+    }
+    .form-submit {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--ember);
+      border: 1px solid var(--ember);
+      color: var(--light);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .form-submit:hover {
+      background: #a03125;
+      border-color: #a03125;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .page.active {
+      animation: fadeUp 0.6s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVIGATION -->
+  <nav>
+    <button class="nav-logo" onclick="showPage('home')">IRON <span>BROTHERHOOD</span></button>
+    <ul class="nav-links">
+      <li><button onclick="showPage('home')">HOME</button></li>
+      <li><button onclick="showPage('join')">JOIN</button></li>
+      <li><button onclick="showPage('calendar')">CALENDAR</button></li>
+      <li><button onclick="showPage('contact')">CONTACT</button></li>
+    </ul>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+  
+  <ul class="nav-mobile" id="mobileMenu">
+    <li><button onclick="showPage('home'); toggleMobileMenu();">HOME</button></li>
+    <li><button onclick="showPage('join'); toggleMobileMenu();">JOIN</button></li>
+    <li><button onclick="showPage('calendar'); toggleMobileMenu();">CALENDAR</button></li>
+    <li><button onclick="showPage('contact'); toggleMobileMenu();">CONTACT</button></li>
+  </ul>
+
+  <!-- HOME PAGE -->
+  <div id="home" class="page active">
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-content">
+        <div class="emblem">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/>
+            <path d="M 50 20 L 60 35 L 75 35 L 65 45 L 70 60 L 50 50 L 30 60 L 35 45 L 25 35 L 40 35 Z" fill="currentColor" opacity="0.8"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+          </svg>
+        </div>
+        <p class="hero-eyebrow">WEEKLY MEN'S GATHERING</p>
+        <h1 class="hero-title">
+          IRON<br>
+          <span class="outline">BROTHERHOOD</span>
+        </h1>
+        <div class="hero-rule"></div>
+        <p class="hero-text">
+          Strength through faith. Community through iron. Every week, we gather to push our bodies and elevate our spirits through shared devotion and rigorous training.
+        </p>
+        <div class="hero-cta">
+          <button class="cta-btn primary" onclick="showPage('join')">JOIN US</button>
+          <button class="cta-btn secondary" onclick="showPage('calendar')">SEE CALENDAR</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- JOIN PAGE -->
+  <div id="join" class="page">
+    <section class="join-section">
+      <div class="section-header">
+        <div class="emblem-md">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/>
+            <path d="M 50 20 L 60 35 L 75 35 L 65 45 L 70 60 L 50 50 L 30 60 L 35 45 L 25 35 L 40 35 Z" fill="currentColor" opacity="0.8"/>
+          </svg>
+        </div>
+        <p class="section-eyebrow">GET STARTED</p>
+        <h2 class="section-title">JOIN IRON BROTHERHOOD</h2>
+        <div class="section-rule"></div>
+        <p class="section-text">
+          Ready to join the brotherhood? Here's how to get started.
+        </p>
+      </div>
+
+      <div class="steps-container">
+        <div class="step">
+          <p class="step-number">STEP 1</p>
+          <h3 class="step-title">Request to Join GroupMe</h3>
+          <p class="step-text">
+            First, request access to our GroupMe community. This is where we share workouts, devotions, and encouragement throughout the week.
+          </p>
+          <a href="https://groupme.com" target="_blank" style="color: var(--ember); margin-top: 1rem; display: inline-block;">Visit GroupMe →</a>
+        </div>
+
+        <div class="step">
+          <p class="step-number">STEP 2</p>
+          <h3 class="step-title">Attend a Workout</h3>
+          <p class="step-text">
+            Check the calendar for our next meeting location and time. All fitness levels are welcome. Bring water, determination, and an open heart.
+          </p>
+          <button onclick="showPage('calendar')" style="color: var(--ember); margin-top: 1rem; cursor: pointer; background: none; border: none;">View Calendar →</button>
+        </div>
+
+        <div class="step">
+          <p class="step-number">STEP 3</p>
+          <h3 class="step-title">Connect & Grow</h3>
+          <p class="step-text">
+            Share your journey, ask questions, and connect with other brothers on your fitness and faith journey. We're here to support each other.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CALENDAR PAGE -->
+  <div id="calendar" class="page">
+    <section class="calendar-section">
+      <div class="calendar-header">
+        <p class="section-eyebrow">SCHEDULE</p>
+        <h2 class="section-title">WORKOUT CALENDAR</h2>
+        <div class="section-rule"></div>
+      </div>
+
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Time</th>
+            <th>Location</th>
+            <th>Focus</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monday</td>
+            <td>6:00 AM</td>
+            <td>Fitness Center</td>
+            <td>Upper Body Strength</td>
+          </tr>
+          <tr>
+            <td>Wednesday</td>
+            <td>6:00 AM</td>
+            <td>Fitness Center</td>
+            <td>Lower Body Strength</td>
+          </tr>
+          <tr>
+            <td>Friday</td>
+            <td>6:00 AM</td>
+            <td>Fitness Center</td>
+            <td>Functional Training</td>
+          </tr>
+          <tr>
+            <td>Saturday</td>
+            <td>8:00 AM</td>
+            <td>Park</td>
+            <td>Outdoor Group Workout</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="text-align: center; margin-top: 3rem; color: var(--muted);">
+        All times listed in local time. Check GroupMe for any schedule changes.
+      </p>
+    </section>
+  </div>
+
+  <!-- CONTACT PAGE -->
+  <div id="contact" class="page">
+    <section class="contact-section">
+      <div class="contact-header">
+        <div class="emblem-sm">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/>
+            <path d="M 50 20 L 60 35 L 75 35 L 65 45 L 70 60 L 50 50 L 30 60 L 35 45 L 25 35 L 40 35 Z" fill="currentColor" opacity="0.8"/>
+          </svg>
+        </div>
+        <p class="section-eyebrow">GET IN TOUCH</p>
+        <h2 class="section-title">ASK A QUESTION</h2>
+        <div class="section-rule"></div>
+      </div>
+
+      <form onsubmit="handleContactForm(event)">
+        <div class="form-group">
+          <label for="name">NAME</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">EMAIL</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="subject">SUBJECT</label>
+          <input type="text" id="subject" name="subject" required>
+        </div>
+
+        <div class="form-group">
+          <label for="message">MESSAGE</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+
+        <button type="submit" class="form-submit">SEND MESSAGE</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 2rem; color: var(--muted); font-size: 14px;">
+        We'll get back to you as soon as possible.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    function showPage(pageName) {
+      // Hide all pages
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
+      
+      // Show selected page
+      document.getElementById(pageName).classList.add('active');
+      
+      // Scroll to top
+      window.scrollTo(0, 0);
+      
+      // Close mobile menu if open
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenu.classList.contains('open')) {
+        toggleMobileMenu();
+      }
+    }
+
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.nav-hamburger');
+      mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('active');
+    }
+
+    function handleContactForm(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      
+      // Construct mailto link
+      const mailtoLink = `mailto:lukeachristner@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;n      window.location.href = mailtoLink;
+      
+      // Reset form
+      event.target.reset();
+    }
+
+    // Show home page by default
+    window.addEventListener('load', () => {
+      showPage('home');
+    });
+  </script>
+</body>
+</html>
